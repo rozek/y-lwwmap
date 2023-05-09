@@ -15,7 +15,7 @@
 // - entries in this.localMap and this.sharedArray with missing "Value" property
 //   such entries will be removed "RetentionPeriod" ms after deletion
 
-  export class LWWMap<T> extends Observable<T> {
+  export class LWWMap<T extends object|boolean|Array<T>|string|number|null|Uint8Array> extends Observable<T> {
     protected RetentionPeriod:number    // how long to keep deletion log entries
     protected sharedArray:any  // elements with higher indices where added later
     protected sharedDoc:any
