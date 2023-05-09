@@ -1,16 +1,20 @@
+import * as Y from 'yjs';
 import { Observable } from 'lib0/observable.js';
 type ChangeLogEntry<T> = {
     Key: string;
     Value?: T;
     Timestamp: number;
 };
-export declare class LWWMap<T> extends Observable<T> {
+export declare class LWWMap<T extends object | boolean | Array<T> | string | number | null | Uint8Array> extends Observable<T> {
     protected RetentionPeriod: number;
     protected sharedArray: any;
     protected sharedDoc: any;
     protected localMap: Map<string, ChangeLogEntry<T>>;
     protected lastTimestamp: number;
-    constructor(sharedArray: any, RetentionPeriod?: number);
+    constructor(sharedArray: Y.Array<{
+        key: string;
+        val: T;
+    }>, RetentionPeriod?: number);
     /**** @@iterator ****/
     [Symbol.iterator](): IterableIterator<T>;
     /**** size ****/

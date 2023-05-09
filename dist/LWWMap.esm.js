@@ -1,7 +1,6 @@
 import { Observable } from 'lib0/observable.js';
 import md5 from 'blueimp-md5';
 
-//import * as Y         from 'https://rozek.github.io/yjs-bundle/dist/yjs-bundle.esm.js'
 const TimestampFactor = 3000; // expected max. # of changes per ms
 // handling of deleted entries:
 // - entries in this.localMap and this.sharedArray with missing "Value" property
