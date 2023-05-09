@@ -12,7 +12,11 @@ When all sharing clients are connected and synchronization works as foreseen, `y
 
 ## Installation ##
 
+`npm install y-lwwmap`
+
 ## Usage ##
+
+`import { LWWMap } from 'y-lwwmap'`
 
 ## Synthetic Timestamps ##
  
