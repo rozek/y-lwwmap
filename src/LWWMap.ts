@@ -225,6 +225,12 @@
       }
     }
 
+  /**** transact ****/
+
+    public transact (Callback:(Transaction:any) => void, Origin?:any):void {
+      this.sharedDoc.transact(Callback,Origin)
+    }
+
   /**** _LogEntryIsBroken ****/
 
     protected _LogEntryIsBroken (LogEntry:any):boolean {
