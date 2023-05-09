@@ -22,7 +22,7 @@ export declare class LWWMap<T extends object | boolean | Array<T> | string | num
     /**** clear ****/
     clear(): void;
     /**** delete ****/
-    delete(Key: string): void;
+    delete(Key: string): boolean;
     /**** entries ****/
     entries(): IterableIterator<[string, T]>;
     /**** forEach ****/

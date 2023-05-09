@@ -64,6 +64,10 @@ class LWWMap extends Observable {
                 this.localMap.set(Key, Change);
                 this.sharedArray.push([Change]);
             });
+            return true;
+        }
+        else {
+            return false;
         }
     }
     /**** entries ****/
