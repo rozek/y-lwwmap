@@ -90,7 +90,7 @@
 
   /**** delete ****/
 
-    public delete (Key:string):void {
+    public delete (Key:string):boolean {
       if (this.localMap.has(Key)) {       // ignore deletions of missing entries
         this.sharedDoc.transact(() => {
           this._removeAnyLogEntriesForKey(Key)
@@ -102,6 +102,10 @@
           this.localMap.set(Key,Change)
           this.sharedArray.push([Change])
         })
+
+        return true
+      } else {
+        return false
       }
     }
 
