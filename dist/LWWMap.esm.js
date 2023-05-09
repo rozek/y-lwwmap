@@ -163,6 +163,10 @@ class LWWMap extends Observable {
             }
         };
     }
+    /**** transact ****/
+    transact(Callback, Origin) {
+        this.sharedDoc.transact(Callback, Origin);
+    }
     /**** _LogEntryIsBroken ****/
     _LogEntryIsBroken(LogEntry) {
         return ((LogEntry == null) ||

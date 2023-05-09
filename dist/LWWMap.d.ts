@@ -37,6 +37,8 @@ export declare class LWWMap<T extends object | boolean | Array<T> | string | num
     set(Key: string, Value: T): void;
     /**** values ****/
     values(): IterableIterator<T>;
+    /**** transact ****/
+    transact(Callback: (Transaction: any) => void, Origin?: any): void;
     /**** _LogEntryIsBroken ****/
     protected _LogEntryIsBroken(LogEntry: any): boolean;
     /**** _ChangesCollide - is "firstChange" newer than "secondChange"? ****/
