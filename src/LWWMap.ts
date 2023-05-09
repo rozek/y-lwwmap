@@ -1,4 +1,4 @@
-//import * as Y         from 'https://rozek.github.io/yjs-bundle/dist/yjs-bundle.esm.js'
+  import * as Y         from 'yjs'
   import { Observable } from 'lib0/observable.js'
   import md5            from 'blueimp-md5'
 
@@ -23,7 +23,8 @@
     protected lastTimestamp:number       // keeps track of most recent timestamp
 
     public constructor (
-      sharedArray:any, RetentionPeriod:number = 30*24*60*60*1000
+      sharedArray:Y.Array<{ key: string, val: T }>,
+      RetentionPeriod:number = 30*24*60*60*1000
     ) {
       super()
 
