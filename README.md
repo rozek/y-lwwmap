@@ -51,9 +51,9 @@ The following differences are important:
   * Uint8Arrays or
   * arrays of the above
 * external changes are reported through events (one per transaction) which are JavaScript [Maps]() with the following [key,value] pairs (the given key is that of a modified LWWMap entry)
-  * `{ action:'add', newValue:... }`
-  * `{ action:'update', oldValue:..., newValue:... }`
-  * `{ action:'delete', oldValue:... }`
+  * `[key, { action:'add', newValue:... }]`
+  * `[key, { action:'update', oldValue:..., newValue:... }]`
+  * `[key, { action:'delete', oldValue:... }]`
 
 Deleting a non-existing entry is permitted, but does neither change the LWWMap nor does it emits an event.
 
