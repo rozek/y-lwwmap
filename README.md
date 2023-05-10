@@ -25,7 +25,7 @@ When all sharing clients are connected and synchronization works as foreseen, `y
 In particular, LWWMaps may also be used within `for ... of` loops:
 
 ```
-const sharedMap = new LWWMap()
+const sharedMap = new LWWMap(sharedArray)
 for (const [Key,Value] of sharedMap) {
   ... 
 }
