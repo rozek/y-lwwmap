@@ -18,11 +18,11 @@ Its implementation is based on that of [YKeyValue](https://github.com/yjs/y-util
 
 Deleted entries are marked as deleted for a limited time only (the "retention period") and removed afterwards.
 
-When all sharing clients are connected and immediately synchronized, `LWWMap`s should behave like ordinary [YKeyValue](https://github.com/yjs/y-utility#ykeyvalue)s.
+When all sharing clients are connected and immediately synchronized, `LWWMap`s should behave like ordinary [YKeyValue](https://github.com/yjs/y-utility#ykeyvalue)s - even in the case of unsynchronized wall clocks.
 
-(t.b.w)
+When reconnecting after a period of disconnection, clients with faster running clocks may have a better chance to push their changes, but only if clients with slower running clocks changed the same entry earlier than the timestamp of the faster client indicates. Assuming, that all wall clocks only differ slightly (let's say, by a few minutes), the slower client only has to wait for that small time offset (after a change made by the faster client) to apply his/her change in order to let it survive the other one.
 
-> Nota bene: it might be worth mentioning that, although changes will be "synchronized", you should avoid working on the same item _simultaneously_ as there will always be a single "winner" who will overwrite the work of all other parties - CRDTs do not implement three-way-diffs which could be used to "merge" simultaneously applied changes together. However, CRDTs are good in synchronizing changes that were made one after the other by different clients
+> Nota bene: it might be worth mentioning that, although changes will be "synchronized", clients should avoid working on the same item _simultaneously_ as there will always be a single "winner" who will overwrite the work of all other clients (CRDTs do not implement three-way-diffs which could be used to "merge" simultaneously applied changes together. However, CRDTs are good in synchronizing changes that were made one after the other by different clients)
 
 ## Installation ##
 
