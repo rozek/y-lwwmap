@@ -2,7 +2,9 @@
 
 a shared [CRDT](https://crdt.tech/) key-value map for [Yjs](https://github.com/yjs/yjs) using a "last-write-wins" ([LWW](https://crdt.tech/glossary)) algorithm for conflict resolution
 
-Yjs
+[Yjs](https://github.com/yjs/yjs) provides a complete ecosystem for (persisting and) sharing "Conflict-free replicated data types" (CRDT) among multiple clients using a variety of persistence and communication providers. The [shared data types](https://github.com/yjs/yjs#shared-types) include arrays and maps, with shared maps becoming inefficient in most cases, which is why there is an alternative implementation based on shared arrays in the [y-utility](https://github.com/yjs/y-utility) package.
+
+Unfortunately, however, the standard approach to resolve conflicts during synchronization is unpredictable from a user's point of view - in particular, former changes may overwrite later changes when synchronized (see issue 520). The aim of y-lwwmap is therefore to keep the chronological order of changes (even in the case of - moderately - desynchronized wall clocks) and let only later changes superseed former ones.
 
 > this work is in progress!
 
