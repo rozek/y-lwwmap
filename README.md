@@ -60,12 +60,14 @@ For Svelte, it is recommended to import the package in a module context. From th
 
 ```html
 <script context="module">
+  import * as Y     from 'yjs'
   import { LWWMap } from 'y-lwwmap'
 </script>
 
 <script>
-  ...
-  const sharedMap = new LWWMap(sharedArray)
+  const sharedDoc       = new Y.Doc()
+  const sharedContainer = sharedDoc.getArray('sharedContainer')
+  const sharedMap       = new LWWMap(sharedContainer)
   ...
 </script>
 ```
