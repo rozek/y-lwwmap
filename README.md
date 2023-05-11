@@ -8,6 +8,10 @@ a shared [CRDT](https://crdt.tech/) key-value map for [Yjs](https://github.com/y
 
 (t.b.w)
 
+* key-value map with literal keys and values of multiple types
+* being compatible to the [Yjs](https://github.com/yjs/yjs) ecosystem it can be shared as part of a [Y.Doc](https://github.com/yjs/yjs#ydoc) using [y-websocket](https://github.com/yjs/y-websocket), [y-webrtc](https://github.com/yjs/y-webrtc) or similar and persisted using [y-indexeddb](https://github.com/yjs/y-indexeddb) or similar
+* implementation is based on [YKeyValue](https://github.com/yjs/y-utility#ykeyvalue) but uses a "last-write-wins" strategy during synchronization
+
 ### Where such an approach seems useful ###
 
 When all sharing clients are connected and synchronization works as foreseen, `y-lwwmap` should behave like an ordinary [YKeyValue](https://github.com/yjs/y-utility#ykeyvalue) - taking care of clients with incorrect running clocks.
