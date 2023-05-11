@@ -12,7 +12,7 @@ All other characteristics of `LWWMap` should be consistent with `YKeyValue` such
 
 ## How it works ##
 
-`LWWMap`s are key-value maps with literal keys and values of multiple types. Being compatible to the [Yjs](https://github.com/yjs/yjs) ecosystem `LWWMap`s can be shared as part of a [Y.Doc](https://github.com/yjs/yjs#ydoc) using [y-websocket](https://github.com/yjs/y-websocket), [y-webrtc](https://github.com/yjs/y-webrtc) or similar and persisted using [y-indexeddb](https://github.com/yjs/y-indexeddb) or similar.
+`LWWMap`s are key-value maps with literal keys and values of multiple types (see below for details). Being compatible to the [Yjs](https://github.com/yjs/yjs) ecosystem, `LWWMap`s can be shared as part of a [Y.Doc](https://github.com/yjs/yjs#ydoc) using [y-websocket](https://github.com/yjs/y-websocket), [y-webrtc](https://github.com/yjs/y-webrtc) or similar and persisted using [y-indexeddb](https://github.com/yjs/y-indexeddb) or similar.
 
 Its implementation is based on that of [YKeyValue](https://github.com/yjs/y-utility#ykeyvalue) but uses a "last-write-wins" strategy during synchronization. This includes keeping track of deleted map entries - such that, upon synchronization, locally modified entries will be removed if deleted remotely after that local modification, or restored if deleted remotely but modified locally afterwards.
 
@@ -21,6 +21,8 @@ Deleted entries are marked as deleted for a limited time only (the "retention pe
 When all sharing clients are connected and immediately synchronized, `LWWMap`s should behave like ordinary [YKeyValue](https://github.com/yjs/y-utility#ykeyvalue)s.
 
 (t.b.w)
+
+> Nota bene: it might be worth mentioning that, although changes will be "synchronized", you should avoid working on the same item _simultaneously_ as there will always be a single "winner" who will overwrite the work of all other parties - CRDTs do not implement three-way-diffs which could be used to "merge" simultaneously applied changes together. However, CRDTs are good in synchronizing changes that were made one after the other by different clients
 
 ## Installation ##
 
