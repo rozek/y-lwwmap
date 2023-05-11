@@ -10,15 +10,13 @@ All other characteristics of `LWWMap` should be consistent with `YKeyValue` such
 
 > this work is in progress!
 
-### How it works ###
+## How it works ##
 
-(t.b.w)
+`LWWMap`s are key-value maps with literal keys and values of multiple types. Being compatible to the [Yjs](https://github.com/yjs/yjs) ecosystem `LWWMap`s can be shared as part of a [Y.Doc](https://github.com/yjs/yjs#ydoc) using [y-websocket](https://github.com/yjs/y-websocket), [y-webrtc](https://github.com/yjs/y-webrtc) or similar and persisted using [y-indexeddb](https://github.com/yjs/y-indexeddb) or similar.
 
-* key-value map with literal keys and values of multiple types
-* being compatible to the [Yjs](https://github.com/yjs/yjs) ecosystem it can be shared as part of a [Y.Doc](https://github.com/yjs/yjs#ydoc) using [y-websocket](https://github.com/yjs/y-websocket), [y-webrtc](https://github.com/yjs/y-webrtc) or similar and persisted using [y-indexeddb](https://github.com/yjs/y-indexeddb) or similar
-* implementation is based on [YKeyValue](https://github.com/yjs/y-utility#ykeyvalue) but uses a "last-write-wins" strategy during synchronization
-* this includes keeping track of deleted map entries - such that, upon synchronization, locally modified entries will be deleted if done so remotely after local modification, or re-incarnated if deleted remotely but modified locally afterwards
-* deleted entries are marked as deleted for a certain time only (the "retention period") and removed afterwards
+Its implementation is based on that of [YKeyValue](https://github.com/yjs/y-utility#ykeyvalue) but uses a "last-write-wins" strategy during synchronization. This includes keeping track of deleted map entries - such that, upon synchronization, locally modified entries will be removed if deleted remotely after that local modification, or restored if deleted remotely but modified locally afterwards.
+
+Deleted entries are marked as deleted for a limited time only (the "retention period") and removed afterwards.
 
 ### Where such an approach seems useful ###
 
