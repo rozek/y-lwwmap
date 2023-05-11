@@ -82,24 +82,24 @@ Deleting a non-existing entry is permitted, but does neither change the LWWMap n
 
 ### Properties ###
 
-* **`size`** - returns the number of elements in this LWWMap
+* **`size`**<br>returns the number of elements in this LWWMap
 
 ### Methods ###
 
-* **`[Symbol.iterator]():IterableIterator<T>`** - works like `entries()` but allows this LWWMap to be used in a `for ... of` loop
-* **`clear ():void`** - removes all elements from this LWWMap
-* **`delete (Key:string):boolean`** - removes the element with the given `Key` from this LWWMap and returns `true` if that element existed before - or `false` otherwise
-* **`entries ():IterableIterator<[string, T]>`** - returns a new map iterator object that contains the [key, value] pairs for each element of this LWWMap in arbitrary order
-* **`forEach (Callback:(Value:T, Key:string, Map:LWWMap<T>) => , thisArg?:any)`** - executes a provided function once per each key/value pair in arbitrary order
-* **`get (Key:string):T | undefined`** - returns (a reference to) the element with the given `Key` in this LWWMap - or `undefined` if such an element does not exist
-* **`has (Key:string):boolean`** - returns `true` if this LWWMap contains an element with the given `Key` - or `false` if not
-* **`keys ():IterableIterator<string>`** - returns a new map iterator object that contains the keys for each element in this LWWMap in arbitrary order
-* **`set (Key:string, Value:T):void`** - adds or updates the element with the given `Key` in this LWWMap by setting the given `Value`
-* **`values ():IterableIterator<T>`** - returns a new map iterator object that contains the values for each element in this LWWMap in arbitrary order<br>&nbsp;<br>
-* **`emit (EventName:string, ArgList:Array<any>):void`** - emits an event with the given `EventName`. All event listeners registered for this event will be invoked with the arguments specified in `ArgList` (see [lib0/Observable](https://github.com/dmonad/lib0/blob/main/observable.js))
-* **`off (EventName:string, Handler:Function):void`** - unregisters the given `Handler` from the given `EventName`
-* **`on (EventName:string, Handler:Function):void`** - registers the given `Handler` for the given `EventName`
-* **`once (EventName:string, Handler:Function):void`** - registers the given `Handler` for the given `EventName` and automatically unregisters it again as soon as the first such event has been received
+* **`[Symbol.iterator]():IterableIterator<T>`**<br>works like `entries()` but allows this LWWMap to be used in a `for ... of` loop
+* **`clear ():void`**<br>removes all elements from this LWWMap
+* **`delete (Key:string):boolean`**<br>removes the element with the given `Key` from this LWWMap and returns `true` if that element existed before - or `false` otherwise
+* **`entries ():IterableIterator<[string, T]>`**<br>returns a new map iterator object that contains the [key, value] pairs for each element of this LWWMap in arbitrary order
+* **`forEach (Callback:(Value:T, Key:string, Map:LWWMap<T>) => , thisArg?:any)`**<br>executes a provided function once per each key/value pair in arbitrary order
+* **`get (Key:string):T | undefined`**<br>returns (a reference to) the element with the given `Key` in this LWWMap - or `undefined` if such an element does not exist
+* **`has (Key:string):boolean`**<br>returns `true` if this LWWMap contains an element with the given `Key` - or `false` if not
+* **`keys ():IterableIterator<string>`**<br>returns a new map iterator object that contains the keys for each element in this LWWMap in arbitrary order
+* **`set (Key:string, Value:T):void`**<br>adds or updates the element with the given `Key` in this LWWMap by setting the given `Value`
+* **`values ():IterableIterator<T>`**<br>returns a new map iterator object that contains the values for each element in this LWWMap in arbitrary order<br>&nbsp;<br>
+* **`emit (EventName:string, ArgList:Array<any>):void`**<br>emits an event with the given `EventName`. All event listeners registered for this event will be invoked with the arguments specified in `ArgList` (see [lib0/Observable](https://github.com/dmonad/lib0/blob/main/observable.js))
+* **`off (EventName:string, Handler:Function):void`**<br>unregisters the given `Handler` from the given `EventName`
+* **`on (EventName:string, Handler:Function):void`**<br>registers the given `Handler` for the given `EventName`
+* **`once (EventName:string, Handler:Function):void`**<br>registers the given `Handler` for the given `EventName` and automatically unregisters it again as soon as the first such event has been received
 
 ## Synthetic Timestamps ##
 
