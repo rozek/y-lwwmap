@@ -6,6 +6,8 @@ a shared [CRDT](https://crdt.tech/) key-value map for [Yjs](https://github.com/y
 
 Unfortunately, however, the standard approach to resolve conflicts during synchronization is unpredictable from a user's point of view - in particular, former changes may overwrite later changes when synchronized (see [issue 520](https://github.com/yjs/yjs/issues/520)). The aim of y-lwwmap is therefore to keep the chronological order of changes (even in the case of - moderately - desynchronized wall clocks) and let only later changes superseed former ones.
 
+All other characteristics of y-lwwmap should be consistent with `YKeyValue` such that an `LWWMap` could be used as a direct drop-in for `YKeyValue`.
+
 > this work is in progress!
 
 ### How it works ###
