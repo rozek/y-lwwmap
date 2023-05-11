@@ -95,7 +95,7 @@ Deleting a non-existing entry is permitted, but does neither change the LWWMap n
 * **`has (Key:string):boolean`** - returns `true` if this LWWMap contains an element with the given `Key` - or `false` if not
 * **`keys ():IterableIterator<string>`** - returns a new map iterator object that contains the keys for each element in this LWWMap in arbitrary order
 * **`set (Key:string, Value:T):void`** - adds or updates the element with the given `Key` in this LWWMap by setting the given `Value`
-* **`values ():IterableIterator<T>`** - returns a new map iterator object that contains the values for each element in this LWWMap in arbitrary order
+* **`values ():IterableIterator<T>`** - returns a new map iterator object that contains the values for each element in this LWWMap in arbitrary order<br>&nbsp;<br>
 * **`emit (EventName:string, ArgList:Array<any>):void`** - emits an event with the given `EventName`. All event listeners registered for this event will be invoked with the arguments specified in `ArgList` (see [lib0/Observable](https://github.com/dmonad/lib0/blob/main/observable.js))
 * **`off (EventName:string, Handler:Function):void`** - unregisters the given `Handler` from the given `EventName`
 * **`on (EventName:string, Handler:Function):void`** - registers the given `Handler` for the given `EventName`
