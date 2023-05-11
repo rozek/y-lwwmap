@@ -18,9 +18,7 @@ Its implementation is based on that of [YKeyValue](https://github.com/yjs/y-util
 
 Deleted entries are marked as deleted for a limited time only (the "retention period") and removed afterwards.
 
-### Where such an approach seems useful ###
-
-When all sharing clients are connected and synchronization works as foreseen, `y-lwwmap` should behave like an ordinary [YKeyValue](https://github.com/yjs/y-utility#ykeyvalue) - taking care of clients with desynchronized wall clocks.
+When all sharing clients are connected and immediately synchronized, `LWWMap`s should behave like ordinary [YKeyValue](https://github.com/yjs/y-utility#ykeyvalue)s.
 
 (t.b.w)
 
