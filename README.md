@@ -2,6 +2,8 @@
 
 a shared [CRDT](https://crdt.tech/) key-value map for [Yjs](https://github.com/yjs/yjs) using a "last-write-wins" ([LWW](https://crdt.tech/glossary)) algorithm for conflict resolution
 
+Yjs
+
 > this work is in progress!
 
 ### How it works ###
@@ -98,6 +100,7 @@ Deleting a non-existing entry is permitted, but does neither change the LWWMap n
 * LWWMaps keep track of the highest timestamp used in local operations and found during synchronizations
 * principally, operations are stamped with the current UTC wall clock time - unless a higher timestamp was observed before: in that case, the higher timestamp is incremented by one, used to stamp the operation and stored as the new highest timestamp
 * this approach guarantees that later operations have higher timestamps as former ones
+* if two changes of the same entry appear to have the same timestamp (but different values), the one with the higher MD5 hash wins - this guarantees consistent behaviour on every client even in the case of timestamp collisions
 
 This leads to the following behaviour
 
