@@ -32,7 +32,7 @@ When all sharing clients are connected and synchronization works as foreseen, `y
 
 (t.b.w)
 
-### Chosing a "RetentionPeriod" ###
+### Choosing a "RetentionPeriod" ###
 
 * deleted entries are remembered (albeit without their contents) for a given `RetentionPeriod` and completely forgotten afterwards
 * the `RetentionPeriod` is configured in the `LWWMap` constructor and remains constant from then on
@@ -63,7 +63,7 @@ The following differences are important:
   * plain `Object`s,
   * `Uint8Array`s or
   * `Array`s of the above
-* external changes are reported through events (one per transaction) which are JavaScript [Maps]() with the following [key,value] pairs (the given key is always that of a modified LWWMap entry)
+* external changes are reported through events (one event per transaction) which are JavaScript [Maps]() with the following [key,value] pairs (the given key is always that of a modified LWWMap entry)
   * `[key, { action:'add', newValue:... }]`
   * `[key, { action:'update', oldValue:..., newValue:... }]`
   * `[key, { action:'delete', oldValue:... }]`
@@ -72,7 +72,7 @@ Deleting a non-existing entry is permitted, but does neither change the LWWMap n
 
 ### Constructor ###
 
-* **`LWWMap<T extends null|boolean|number|string|object|Uint8Array|Array<T>> extends Observable<T> (sharedArray:Y.Array<{ key: string, val: T }>, RetentionPeriod:number = 30*24*60*60*1000)`**<br>creates a new `LWWMap`for elements of type `T`, synchronized using the given Y.Array `sharedArray`. If provided, deleted entries are kept for the given `RetentionPeriod` (measured from the time of deletion on) and forgotten afterwards
+* **`LWWMap<T extends null|boolean|number|string|object|Uint8Array|Array<T>> extends Observable<T> (sharedArray:Y.Array<{ key: string, val: T }>, RetentionPeriod:number = 30*24*60*60*1000)`**<br>creates a new `LWWMap`for elements of type `T`, synchronized using the given [Y.Array](https://github.com/yjs/yjs#shared-types) `sharedArray`. If provided, deleted entries are kept for the given `RetentionPeriod` (measured from the time of deletion on) and forgotten afterwards
 
 ### Properties ###
 
