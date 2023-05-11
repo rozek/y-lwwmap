@@ -8,7 +8,9 @@ Unfortunately, however, the standard approach to resolve conflicts during synchr
 
 All other characteristics of `LWWMap` should be consistent with `YKeyValue` such that an `LWWMap` could be used as a direct drop-in for `YKeyValue`.
 
-> this work is in progress!
+**NPM users**: please consider the [Github README](https://github.com/rozek/y-lwwmap/blob/main/README.md) for the latest description of this package (as updating the docs would otherwise always require a new NPM package version)
+
+> Just a small note: if you like this module and plan to use it, consider "starring" this repository (you will find the "Star" button on the top right of this page), so that I know which of my repositories to take most care of.
 
 ## How it works ##
 
@@ -20,32 +22,79 @@ Deleted entries are marked as deleted for a limited time only (the "retention pe
 
 When all sharing clients are connected and immediately synchronized, `LWWMap`s should behave like ordinary [YKeyValue](https://github.com/yjs/y-utility#ykeyvalue)s - even in the case of unsynchronized wall clocks.
 
-When reconnecting after a period of disconnection, clients with faster running clocks may have a better chance to push their changes, but only if clients with slower running clocks changed the same entry earlier than the timestamp of the faster client indicates. Assuming, that all wall clocks only differ slightly (let's say, by a few minutes), the slower client only has to wait for that small time offset (after a change made by the faster client) to apply his/her change in order to let it survive the other one.
+When reconnecting after a period of disconnection, clients with faster running clocks may have a better chance to push their changes, but only if clients with slower running clocks changed the same entry earlier than the timestamp of the faster client indicates. Assuming, that all wall clocks only differ slightly (let's say, by a few minutes), the slower client only has to wait for that small time offset (after a change made by the faster client) while offline to apply his/her change in order to let it survive the other one upon reconnection.
 
 > Nota bene: it might be worth mentioning that, although changes will be "synchronized", clients should avoid working on the same item _simultaneously_ as there will always be a single "winner" who will overwrite the work of all other clients (CRDTs do not implement three-way-diffs which could be used to "merge" simultaneously applied changes together. However, CRDTs are good in synchronizing changes that were made one after the other by different clients)
 
 ## Installation ##
 
-`npm install y-lwwmap`
+`y-lwwmap` may be used as an ECMAScript module (ESM), a CommonJS or AMD module or from a global variable.
 
-(t.b.w)
+You may either install the package into your build environment using [NPM](https://docs.npmjs.com/) with the command
 
-## Usage ##
+```
+npm install y-lwwmap
+```
 
-`import { LWWMap } from 'y-lwwmap'`
+or load the plain script file directly
 
-(t.b.w)
+```html
+<script src="https://unpkg.com/y-lwwmap"></script>
+```
+
+## Access ##
+
+How to access the package depends on the type of module you prefer
+
+* ESM (or Svelte): `import { LWWMap } from 'y-lwwmap'`
+* CommonJS: `const LWWMap = require('y-lwwmap')`
+* AMD: `require(['y-lwwmap'], (LWWMap) => {...})`
+
+Alternatively, you may access the global variable `LWWMap` directly.
+
+Note for ECMAScript module users: all module functions and values are exported individually, thus allowing your bundler to perform some "tree-shaking" in order to include actually used functions or values (together with their dependencies) only.
+
+## Usage within Svelte ##
+
+For Svelte, it is recommended to import the package in a module context. From then on, its exports may be used as usual:
+
+```html
+<script context="module">
+  import { LWWMap } from 'y-lwwmap'
+</script>
+
+<script>
+  ...
+  const sharedMap = new LWWMap(sharedArray)
+  ...
+</script>
+```
+
+## Usage as ECMAscript, CommonJS or AMD Module (or as a global Variable) ##
+
+Let's assume that you already "required" or "imported" (or simply loaded) the module according to your local environment. In that case, you may use it as follows:
+
+```javascript
+  ...
+  const sharedMap = new LWWMap(sharedArray)
+  ...
+```
 
 ### Choosing a "RetentionPeriod" ###
 
-* deleted entries are remembered (albeit without their contents) for a given `RetentionPeriod` and completely forgotten afterwards
-* the `RetentionPeriod` is configured in the `LWWMap` constructor and remains constant from then on
-* all `LWWMap` instances for the same shared Y.Array should always use the same `RetentionPeriod` - otherwise the synchronization behaviour after deletion of elements while offline may differ from your expectations (i.e., formerly deleted entries may suddenly appear again)
-* as a consequence, the following "rules of thumb" seem useful
-  * keep `RetentionPeriod` as short as possible if you plan to delete entries often (as every deleted entry still consumes memory keeping its key and deletion timestamp)
-  * make `RetentionPeriod` larger than the longest expected offline duration for any client
+In order to choose a "useful" `RetentionPeriod`, please keep in mind that
 
-## API ##
+* deleted entries are remembered (albeit without their contents) for the given `RetentionPeriod` only and completely forgotten afterwards,
+* the `RetentionPeriod` is configured once in the `LWWMap` constructor and remains constant from then on,
+* all `LWWMap` instances for the same shared Y.Array should always use the same `RetentionPeriod` - otherwise the synchronization behaviour after deletion of elements while offline may differ from your expectations (i.e., formerly deleted entries may suddenly appear again)
+
+As a consequence, the following "rules of thumb" seem useful
+* keep `RetentionPeriod` as short as possible if you plan to delete entries often (as every deleted entry still consumes memory keeping its key and deletion timestamp)
+* make `RetentionPeriod` larger than the longest expected offline duration for any client
+
+## API Reference ##
+
+The following documentation shows method signatures as used by TypeScript - if you prefer plain JavaScript, just ignore the type annotations.
 
 `LWWMap` tries to mimic the interface of [JavaScript Maps](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) as closely as possible.
 
