@@ -11,10 +11,12 @@ a shared [CRDT](https://crdt.tech/) key-value map for [Yjs](https://github.com/y
 * key-value map with literal keys and values of multiple types
 * being compatible to the [Yjs](https://github.com/yjs/yjs) ecosystem it can be shared as part of a [Y.Doc](https://github.com/yjs/yjs#ydoc) using [y-websocket](https://github.com/yjs/y-websocket), [y-webrtc](https://github.com/yjs/y-webrtc) or similar and persisted using [y-indexeddb](https://github.com/yjs/y-indexeddb) or similar
 * implementation is based on [YKeyValue](https://github.com/yjs/y-utility#ykeyvalue) but uses a "last-write-wins" strategy during synchronization
+* this includes keeping track of deleted map entries - such that, upon synchronization, locally modified entries will be deleted if done so remotely after local modification, or re-incarnated if deleted remotely but modified locally afterwards
+* deleted entries are marked as deleted for a certain time only (the "retention period") and removed afterwards
 
 ### Where such an approach seems useful ###
 
-When all sharing clients are connected and synchronization works as foreseen, `y-lwwmap` should behave like an ordinary [YKeyValue](https://github.com/yjs/y-utility#ykeyvalue) - taking care of clients with incorrect running clocks.
+When all sharing clients are connected and synchronization works as foreseen, `y-lwwmap` should behave like an ordinary [YKeyValue](https://github.com/yjs/y-utility#ykeyvalue) - taking care of clients with desynchronized wall clocks.
 
 (t.b.w)
 
@@ -29,6 +31,15 @@ When all sharing clients are connected and synchronization works as foreseen, `y
 `import { LWWMap } from 'y-lwwmap'`
 
 (t.b.w)
+
+### Chosing a "RetentionPeriod" ###
+
+* deleted entries are remembered (albeit without their contents) for a given `RetentionPeriod` and completely forgotten afterwards
+* the `RetentionPeriod` is configured in the `LWWMap` constructor and remains constant from then on
+* all `LWWMap` instances for the same shared Y.Array should always use the same `RetentionPeriod` - otherwise the synchronization behaviour after deletion of elements while offline may differ from your expectations (i.e., formerly deleted entries may suddenly appear again)
+* as a consequence, the following "rules of thumb" seem useful
+  * keep `RetentionPeriod` as short as possible if you plan to delete entries often (as every deleted entry still consumes memory keeping its key and deletion timestamp)
+  * make `RetentionPeriod` larger than the longest expected offline duration for any client
 
 ## API ##
 
@@ -46,24 +57,22 @@ for (const [Key,Value] of sharedMap) {
 The following differences are important:
 
 * keys must be strings - keys of other types are not supported
-* values must be of one of the following types
-  * null
-  * boolean
-  * number
-  * string
-  * plain objects
-  * Uint8Arrays or
-  * arrays of the above
-* external changes are reported through events (one per transaction) which are JavaScript [Maps]() with the following [key,value] pairs (the given key is that of a modified LWWMap entry)
+* values must be
+  * `null`,
+  * `boolean`, `number` or `string` primitives
+  * plain `Object`s,
+  * `Uint8Array`s or
+  * `Array`s of the above
+* external changes are reported through events (one per transaction) which are JavaScript [Maps]() with the following [key,value] pairs (the given key is always that of a modified LWWMap entry)
   * `[key, { action:'add', newValue:... }]`
   * `[key, { action:'update', oldValue:..., newValue:... }]`
   * `[key, { action:'delete', oldValue:... }]`
 
-Deleting a non-existing entry is permitted, but does neither change the LWWMap nor does it emits an event.
+Deleting a non-existing entry is permitted, but does neither change the LWWMap nor does it emit an event.
 
 ### Constructor ###
 
-* **`LWWMap<T extends null|boolean|number|string|object|Uint8Array|Array<T>> extends Observable<T> (sharedArray:Y.Array<{ key: string, val: T }>, RetentionPeriod:number = 30*24*60*60*1000)`** - 
+* **`LWWMap<T extends null|boolean|number|string|object|Uint8Array|Array<T>> extends Observable<T> (sharedArray:Y.Array<{ key: string, val: T }>, RetentionPeriod:number = 30*24*60*60*1000)`**<br>creates a new `LWWMap`for elements of type `T`, synchronized using the given Y.Array `sharedArray`. If provided, deleted entries are kept for the given `RetentionPeriod` (measured from the time of deletion on) and forgotten afterwards
 
 ### Properties ###
 
