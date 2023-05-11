@@ -103,17 +103,25 @@ Deleting a non-existing entry is permitted, but does neither change the LWWMap n
 
 ## Synthetic Timestamps ##
 
-(t.b.w)
+LWWMaps use "synthetic timestamps" in order to keep the chronological order even in the case of (moderately) desynchronized wall clocks between clients.
 
-* LWWMaps keep track of the highest timestamp used in local operations and found during synchronizations
-* principally, operations are stamped with the current UTC wall clock time - unless a higher timestamp was observed before: in that case, the higher timestamp is incremented by one, used to stamp the operation and stored as the new highest timestamp
-* this approach guarantees that later operations have higher timestamps as former ones
-* if two changes of the same entry appear to have the same timestamp (but different values), the one with the higher MD5 hash wins - this guarantees consistent behaviour on every client even in the case of timestamp collisions
+These "synthetic timestamps" work as follows:
 
-This leads to the following behaviour
+* LWWMaps keep track of the highest timestamp used in local operations and found during synchronizations;
+* principally, operations are stamped with the current UTC wall clock time - unless a higher timestamp was observed before: in that case, the higher timestamp is incremented by one, used to stamp the operation and stored as the new highest timestamp;
+* this approach guarantees that later operations always have higher timestamps as former ones;
+* if two changes of the same entry appear to have the same timestamp (but different values), the one with the higher MD5 hash wins - this guarantees consistent behaviour for every client even in the case of timestamp collisions
 
-* while connected (and synchronized), later changes actually overwrite former ones
-* upon reconnection (during synchronization), peers with faster running clocks have better chances to keep their changes - but only within the offset between slower and faster clocks
+This leads to the following LWWMap behaviour
+
+* while connected (and immediately synchronizing upon operations), later changes actually overwrite former ones
+* upon reconnection after having been offline for a while (i.e., during synchronization), peers with faster running clocks still have better chances to keep their changes - but only within the offset between slower and faster clocks (this is why clients should only have "moderately" desynchronized wall clocks)
+
+In other words,
+
+* let's say, two clients "past" and "future" have wall clocks which differ by 1 minute (with "future" having a faster clock than "past")
+* with an active network connection, the differing wall clocks do not play any role (within the transmission time over this network)
+* while beeing offline, "future" changes will superseed "past" ones - but only if the "past" one wasn't be applied more than 1 minute later than the "future" one
 
 ## Build Instructions ##
 
