@@ -152,7 +152,7 @@ Deleting a non-existing entry is permitted, but does neither change the LWWMap n
 
 ## Synthetic Timestamps ##
 
-LWWMaps use "synthetic timestamps" similar to [Lamport timestamps](https://martinfowler.com/articles/patterns-of-distributed-systems/lamport-clock.html) in order to keep the chronological order even in the case of (moderately) desynchronized wall clocks between clients.
+LWWMaps use "synthetic timestamps" similar to [Lamport timestamps](https://lamport.azurewebsites.net/pubs/time-clocks.pdf)  (see [here](https://martinfowler.com/articles/patterns-of-distributed-systems/lamport-clock.html) for a short description with some code) in order to keep the chronological order even in the case of (moderately) desynchronized wall clocks between clients.
 
 These "synthetic timestamps" work as follows:
 
