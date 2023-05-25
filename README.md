@@ -24,7 +24,7 @@ When all sharing clients are connected and immediately synchronized, `LWWMap`s s
 
 When reconnecting after a period of disconnection, clients with faster running clocks may have a better chance to push their changes, but only if clients with slower running clocks changed the same entry earlier than the timestamp of the faster client indicates. Assuming, that all wall clocks only differ slightly (let's say, by a few minutes), the slower client only has to wait for that small time offset (after a change made by the faster client) while offline to apply his/her change in order to let it survive the other one upon reconnection.
 
-> Nota bene: it might be worth mentioning that, although changes will be "synchronized", clients should avoid working on the same item _simultaneously_ as there will always be a single "winner" who will overwrite the work of all other clients (CRDTs do not implement three-way-diffs which could be used to "merge" simultaneously applied changes together. However, CRDTs are good in synchronizing changes that were made one after the other by different clients)
+> Nota bene: it might be worth mentioning that, although changes will be "synchronized", clients should avoid working on the same item _simultaneously_ as there will always be a single "winner" who will overwrite the work of all other clients (CRDTs do not implement operational transforms which could be used to "merge" simultaneously applied changes together. However, CRDTs are good in synchronizing changes that were made one after the other by different clients)
 
 ## Installation ##
 
