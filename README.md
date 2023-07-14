@@ -131,7 +131,8 @@ Deleting a non-existing entry is permitted, but does neither change the LWWMap n
 
 ### Properties ###
 
-* **`size`**<br>returns the number of elements in this LWWMap
+* **`Container`**<br>contains a reference to the container of this LWWMap, i.e., the `sharedArray` passed as the first argument to the constructor
+* **`size`**<br>contains the number of elements in this LWWMap
 
 ### Methods ###
 
