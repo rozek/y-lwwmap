@@ -231,6 +231,12 @@
       this.sharedDoc.transact(Callback,Origin)
     }
 
+  /**** Container ****/
+
+    public get Container ():Y.Array<{ key: string, val: T }> {
+      return this.sharedArray
+    }
+
   /**** _LogEntryIsBroken ****/
 
     protected _LogEntryIsBroken (LogEntry:any):boolean {
