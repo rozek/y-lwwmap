@@ -39,6 +39,11 @@ export declare class LWWMap<T extends object | boolean | Array<T> | string | num
     values(): IterableIterator<T>;
     /**** transact ****/
     transact(Callback: (Transaction: any) => void, Origin?: any): void;
+    /**** Container ****/
+    get Container(): Y.Array<{
+        key: string;
+        val: T;
+    }>;
     /**** _LogEntryIsBroken ****/
     protected _LogEntryIsBroken(LogEntry: any): boolean;
     /**** _ChangesCollide - is "firstChange" newer than "secondChange"? ****/

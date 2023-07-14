@@ -167,6 +167,10 @@ class LWWMap extends Observable {
     transact(Callback, Origin) {
         this.sharedDoc.transact(Callback, Origin);
     }
+    /**** Container ****/
+    get Container() {
+        return this.sharedArray;
+    }
     /**** _LogEntryIsBroken ****/
     _LogEntryIsBroken(LogEntry) {
         return ((LogEntry == null) ||
