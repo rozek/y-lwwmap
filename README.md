@@ -119,7 +119,7 @@ The following differences are important:
   * plain (JSON-serializable) `Object`s,
   * `Array`s of the above,
   * `Y.Array`s or nested `LWWMap`s 
-* external changes are reported through events (one event per transaction) which are JavaScript [Maps]() with the following [key,value] pairs (the given key is always that of a modified LWWMap entry)
+* external changes are reported through `'change'` events (one event per transaction) containing JavaScript [Maps]() with the following [key,value] pairs (the given key is always that of a modified LWWMap entry)
   * `[key, { action:'add', newValue:... }]`
   * `[key, { action:'update', oldValue:..., newValue:... }]`
   * `[key, { action:'delete', oldValue:... }]`
