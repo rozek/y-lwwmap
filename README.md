@@ -114,10 +114,11 @@ The following differences are important:
 * keys must be strings - keys of other types are not supported
 * values must be
   * `null`,
-  * `boolean`, `number` or `string` primitives
-  * plain `Object`s,
-  * `Uint8Array`s or
-  * `Array`s of the above
+  * `boolean`, `number` or `string` primitives,
+  * `Uint8Array`s,
+  * plain (JSON-serializable) `Object`s,
+  * `Array`s of the above,
+  * `Y.Array`s or nested `LWWMap`s 
 * external changes are reported through events (one event per transaction) which are JavaScript [Maps]() with the following [key,value] pairs (the given key is always that of a modified LWWMap entry)
   * `[key, { action:'add', newValue:... }]`
   * `[key, { action:'update', oldValue:..., newValue:... }]`
