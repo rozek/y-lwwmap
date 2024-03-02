@@ -141,7 +141,7 @@ Deleting a non-existing entry is permitted, but does neither change the LWWMap n
 * **`clear ():void`**<br>removes all elements from this LWWMap
 * **`delete (Key:string):boolean`**<br>removes the element with the given `Key` from this LWWMap and returns `true` if that element existed before - or `false` otherwise
 * **`entries ():IterableIterator<[string, T]>`**<br>returns a new map iterator object that contains the [key, value] pairs for each element of this LWWMap in arbitrary order
-* **`forEach (Callback:(Value:T, Key:string, Map:LWWMap<T>) => , thisArg?:any)`**<br>executes a provided function once per each key/value pair in arbitrary order
+* **`forEach (Callback:(Value:T, Key:string, Map:LWWMap<T>) => void, thisArg?:any):void`**<br>executes a provided function once per each key/value pair in arbitrary order
 * **`get (Key:string):T | undefined`**<br>returns (a reference to) the element with the given `Key` in this LWWMap - or `undefined` if such an element does not exist
 * **`has (Key:string):boolean`**<br>returns `true` if this LWWMap contains an element with the given `Key` - or `false` if not
 * **`keys ():IterableIterator<string>`**<br>returns a new map iterator object that contains the keys for each element in this LWWMap in arbitrary order
