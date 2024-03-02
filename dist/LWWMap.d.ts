@@ -14,7 +14,7 @@ export declare class LWWMap<T extends object | boolean | Array<T> | string | num
     constructor(sharedArray: Y.Array<{
         key: string;
         val: T;
-    }>, RetentionPeriod?: number);
+    }>, RetentionPeriod?: number, sharedDoc?: any);
     /**** @@iterator ****/
     [Symbol.iterator](): IterableIterator<T>;
     /**** size ****/

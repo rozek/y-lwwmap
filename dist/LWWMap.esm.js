@@ -6,10 +6,10 @@ const TimestampFactor = 3000; // expected max. # of changes per ms
 // - entries in this.localMap and this.sharedArray with missing "Value" property
 //   such entries will be removed "RetentionPeriod" ms after deletion
 class LWWMap extends Observable {
-    constructor(sharedArray, RetentionPeriod = 30 * 24 * 60 * 60 * 1000) {
+    constructor(sharedArray, RetentionPeriod = 30 * 24 * 60 * 60 * 1000, sharedDoc) {
         super();
         this.sharedArray = sharedArray; // this is the actually shared object
-        this.sharedDoc = sharedArray.doc;
+        this.sharedDoc = sharedDoc || sharedArray.doc;
         this.RetentionPeriod = RetentionPeriod * TimestampFactor;
         this.lastTimestamp = Date.now() * TimestampFactor;
         this.localMap = new Map();
