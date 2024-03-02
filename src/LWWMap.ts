@@ -24,12 +24,12 @@
 
     public constructor (
       sharedArray:Y.Array<{ key: string, val: T }>,
-      RetentionPeriod:number = 30*24*60*60*1000
+      RetentionPeriod:number = 30*24*60*60*1000, sharedDoc?:any
     ) {
       super()
 
       this.sharedArray = sharedArray       // this is the actually shared object
-      this.sharedDoc   = sharedArray.doc
+      this.sharedDoc   = sharedDoc || sharedArray.doc
 
       this.RetentionPeriod = RetentionPeriod * TimestampFactor
       this.lastTimestamp   = Date.now()      * TimestampFactor
