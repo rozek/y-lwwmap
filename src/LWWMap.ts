@@ -18,18 +18,16 @@
   export class LWWMap<T extends object|boolean|Array<T>|string|number|null|Uint8Array> extends Observable<T> {
     protected RetentionPeriod:number    // how long to keep deletion log entries
     protected sharedArray:any  // elements with higher indices where added later
-    protected sharedDoc:any
     protected localMap:Map<string,ChangeLogEntry<T>> // caches validated changes
     protected lastTimestamp:number       // keeps track of most recent timestamp
 
     public constructor (
       sharedArray:Y.Array<{ key: string, val: T }>,
-      RetentionPeriod:number = 30*24*60*60*1000, sharedDoc?:any
+      RetentionPeriod:number = 30*24*60*60*1000
     ) {
       super()
 
       this.sharedArray = sharedArray       // this is the actually shared object
-      this.sharedDoc   = sharedDoc || sharedArray.doc
 
       this.RetentionPeriod = RetentionPeriod * TimestampFactor
       this.lastTimestamp   = Date.now()      * TimestampFactor
@@ -68,7 +66,7 @@
 
     public clear ():void {
       if (this.size > 0) {
-        this.sharedDoc.transact(() => {
+        this.sharedArray.doc.transact(() => {
           this._removeAnyObsoleteDeletions()    // from localMap and sharedArray
 
           this.sharedArray.delete(0,this.sharedArray.length)
@@ -92,7 +90,7 @@
 
     public delete (Key:string):boolean {
       if (this.localMap.has(Key)) {       // ignore deletions of missing entries
-        this.sharedDoc.transact(() => {
+        this.sharedArray.doc.transact(() => {
           this._removeAnyLogEntriesForKey(Key)
           this._removeAnyObsoleteDeletions()
 
@@ -189,7 +187,7 @@
   /**** set ****/
 
     public set (Key:string, Value:T):void {
-      this.sharedDoc.transact(() => {
+      this.sharedArray.doc.transact(() => {
         this._removeAnyLogEntriesForKey(Key)
         this._removeAnyObsoleteDeletions()
 
@@ -228,7 +226,7 @@
   /**** transact ****/
 
     public transact (Callback:(Transaction:any) => void, Origin?:any):void {
-      this.sharedDoc.transact(Callback,Origin)
+      this.sharedArray.doc.transact(Callback,Origin)
     }
 
   /**** Container ****/
@@ -278,7 +276,7 @@
       const DeletionSet = new Map()              // keeps track of deletion logs
 
       const ChangeLog:ChangeLogEntry<T>[] = this.sharedArray.toArray()
-      this.sharedDoc.transact(() => {
+      this.sharedArray.doc.transact(() => {
         for (let i = ChangeLog.length-1; i >= 0; i--) {// backwards for deletion
           const loggedChange:ChangeLogEntry<T> = ChangeLog[i]
 
@@ -408,7 +406,7 @@
           })
 
           const ChangeLog:ChangeLogEntry<T>[] = this.sharedArray.toArray()
-          this.sharedDoc.transact(() => {
+          this.sharedArray.doc.transact(() => {
             const ChangesToRefresh = new Map()
 
           /**** remove any obsolete ChangeLog entries... ****/
@@ -458,7 +456,7 @@
 
       if (EventLog.size > 0) {
         const ChangeLog:ChangeLogEntry<T>[] = this.sharedArray.toArray()
-        this.sharedDoc.transact(() => {
+        this.sharedArray.doc.transact(() => {
           for (let i = ChangeLog.length-1; i >= 0; i--) { // backw. for deletion
             const loggedChange = ChangeLog[i]
             const Key          = loggedChange.Key
