@@ -8,13 +8,12 @@ type ChangeLogEntry<T> = {
 export declare class LWWMap<T extends object | boolean | Array<T> | string | number | null | Uint8Array> extends Observable<T> {
     protected RetentionPeriod: number;
     protected sharedArray: any;
-    protected sharedDoc: any;
     protected localMap: Map<string, ChangeLogEntry<T>>;
     protected lastTimestamp: number;
     constructor(sharedArray: Y.Array<{
         key: string;
         val: T;
-    }>, RetentionPeriod?: number, sharedDoc?: any);
+    }>, RetentionPeriod?: number);
     /**** @@iterator ****/
     [Symbol.iterator](): IterableIterator<T>;
     /**** size ****/

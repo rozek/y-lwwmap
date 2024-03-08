@@ -6,10 +6,9 @@ const TimestampFactor = 3000; // expected max. # of changes per ms
 // - entries in this.localMap and this.sharedArray with missing "Value" property
 //   such entries will be removed "RetentionPeriod" ms after deletion
 class LWWMap extends Observable {
-    constructor(sharedArray, RetentionPeriod = 30 * 24 * 60 * 60 * 1000, sharedDoc) {
+    constructor(sharedArray, RetentionPeriod = 30 * 24 * 60 * 60 * 1000) {
         super();
         this.sharedArray = sharedArray; // this is the actually shared object
-        this.sharedDoc = sharedDoc || sharedArray.doc;
         this.RetentionPeriod = RetentionPeriod * TimestampFactor;
         this.lastTimestamp = Date.now() * TimestampFactor;
         this.localMap = new Map();
@@ -36,7 +35,7 @@ class LWWMap extends Observable {
     /**** clear ****/
     clear() {
         if (this.size > 0) {
-            this.sharedDoc.transact(() => {
+            this.sharedArray.doc.transact(() => {
                 this._removeAnyObsoleteDeletions(); // from localMap and sharedArray
                 this.sharedArray.delete(0, this.sharedArray.length);
                 this.localMap.forEach((loggedEntry, Key) => {
@@ -56,7 +55,7 @@ class LWWMap extends Observable {
     /**** delete ****/
     delete(Key) {
         if (this.localMap.has(Key)) { // ignore deletions of missing entries
-            this.sharedDoc.transact(() => {
+            this.sharedArray.doc.transact(() => {
                 this._removeAnyLogEntriesForKey(Key);
                 this._removeAnyObsoleteDeletions();
                 this._updateLastTimestampWith(Date.now() * TimestampFactor);
@@ -133,7 +132,7 @@ class LWWMap extends Observable {
     }
     /**** set ****/
     set(Key, Value) {
-        this.sharedDoc.transact(() => {
+        this.sharedArray.doc.transact(() => {
             this._removeAnyLogEntriesForKey(Key);
             this._removeAnyObsoleteDeletions();
             this._updateLastTimestampWith(Date.now() * TimestampFactor);
@@ -165,7 +164,7 @@ class LWWMap extends Observable {
     }
     /**** transact ****/
     transact(Callback, Origin) {
-        this.sharedDoc.transact(Callback, Origin);
+        this.sharedArray.doc.transact(Callback, Origin);
     }
     /**** Container ****/
     get Container() {
@@ -199,7 +198,7 @@ class LWWMap extends Observable {
     _initializeMap() {
         const DeletionSet = new Map(); // keeps track of deletion logs
         const ChangeLog = this.sharedArray.toArray();
-        this.sharedDoc.transact(() => {
+        this.sharedArray.doc.transact(() => {
             for (let i = ChangeLog.length - 1; i >= 0; i--) { // backwards for deletion
                 const loggedChange = ChangeLog[i];
                 const Key = loggedChange.Key;
@@ -306,7 +305,7 @@ class LWWMap extends Observable {
                     ChangesToDelete.add(loggedUpdate); // remove inconsistent change logs
                 });
                 const ChangeLog = this.sharedArray.toArray();
-                this.sharedDoc.transact(() => {
+                this.sharedArray.doc.transact(() => {
                     const ChangesToRefresh = new Map();
                     /**** remove any obsolete ChangeLog entries... ****/
                     for (let i = ChangeLog.length - 1; i >= 0; i--) { // backw. for deletion
@@ -346,7 +345,7 @@ class LWWMap extends Observable {
         this._removeAnyObsoleteDeletions();
         if (EventLog.size > 0) {
             const ChangeLog = this.sharedArray.toArray();
-            this.sharedDoc.transact(() => {
+            this.sharedArray.doc.transact(() => {
                 for (let i = ChangeLog.length - 1; i >= 0; i--) { // backw. for deletion
                     const loggedChange = ChangeLog[i];
                     const Key = loggedChange.Key;
