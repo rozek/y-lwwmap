@@ -1,6 +1,6 @@
 {
   "name": "y-lwwmap",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "a shared CRDT key-value map for Yjs using a \"last-write-wins\" (LWW) algorithm for conflict resolution",
   "type": "module",
   "browser": "./dist/LWWMap.js",
