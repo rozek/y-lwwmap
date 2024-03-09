@@ -367,7 +367,11 @@
             case ! ('Value' in loggedUpdate):    // log entry defines a deletion
               if (KeyIsKnown) {           // actually delete cached entries only
                 if (this._ChangesCollide(cachedUpdate,loggedUpdate)) {
-                  throw new Error('Conflict: remotely deleted entry was modified locally')
+                	console.warn(
+                	  'LWWMap: remotely deleted entry was later modified locally',
+                	  cachedUpdate.Timestamp,loggedUpdate.Timestamp
+                	)
+                	return
                 }
 
                 updateTransactionTimeWith(loggedUpdate.Timestamp)
@@ -379,7 +383,11 @@
               }
               break
             case KeyIsKnown && this._ChangesCollide(cachedUpdate,loggedUpdate):
-              throw new Error('Conflict: remote change is outdated')
+              console.warn(
+                'LWWMap: remote change is outdated',
+                cachedUpdate.Timestamp,loggedUpdate.Timestamp
+              )
+              return
             default:                                      // everything seems ok
               updateTransactionTimeWith(loggedUpdate.Timestamp)
 
