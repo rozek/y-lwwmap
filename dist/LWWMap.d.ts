@@ -1,5 +1,5 @@
 import * as Y from 'yjs';
-import { Observable } from 'lib0/observable.js';
+import { Observable } from 'lib0/observable';
 type ChangeLogEntry<T> = {
     Key: string;
     Value?: T;

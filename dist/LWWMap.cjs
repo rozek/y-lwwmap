@@ -1,11 +1,19 @@
-import { Observable } from 'lib0/observable';
-import md5 from 'blueimp-md5';
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var observable = require('lib0/observable');
+var md5 = require('blueimp-md5');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var md5__default = /*#__PURE__*/_interopDefaultLegacy(md5);
 
 const TimestampFactor = 3000; // expected max. # of changes per ms
 // handling of deleted entries:
 // - entries in this.localMap and this.sharedArray with missing "Value" property
 //   such entries will be removed "RetentionPeriod" ms after deletion
-class LWWMap extends Observable {
+class LWWMap extends observable.Observable {
     constructor(sharedArray, RetentionPeriod = 30 * 24 * 60 * 60 * 1000) {
         super();
         this.sharedArray = sharedArray; // this is the actually shared object
@@ -181,7 +189,7 @@ class LWWMap extends Observable {
     /**** _ChangesCollide - is "firstChange" newer than "secondChange"? ****/
     _md5Hash(Value) {
         try {
-            return md5(JSON.stringify(Value));
+            return md5__default["default"](JSON.stringify(Value));
         }
         catch (Signal) {
             return '';
@@ -408,5 +416,5 @@ class LWWMap extends Observable {
     }
 }
 
-export { LWWMap };
-//# sourceMappingURL=LWWMap.esm.js.map
+exports.LWWMap = LWWMap;
+//# sourceMappingURL=LWWMap.cjs.map
