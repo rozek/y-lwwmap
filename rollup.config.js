@@ -16,6 +16,10 @@ export default {
       file:     './dist/LWWMap.esm.js',
       format:   'esm',
       sourcemap:true,
+    },{
+      file:     './dist/LWWMap.cjs',
+      format:   'cjs',
+      sourcemap:true,
     }
   ],
   plugins: [
