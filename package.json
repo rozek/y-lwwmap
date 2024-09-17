@@ -9,7 +9,7 @@
   "types": "./dist/LWWMap.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/LWWMap.js",
+      "require": "./dist/LWWMap.cjs",
       "import": "./dist/LWWMap.esm.js"
     },
     "./package.json": "./package.json"

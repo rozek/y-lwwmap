@@ -1,5 +1,5 @@
   import * as Y         from 'yjs'
-  import { Observable } from 'lib0/observable.js'
+  import { Observable } from 'lib0/observable'
   import md5            from 'blueimp-md5'
 
   const TimestampFactor = 3000              // expected max. # of changes per ms
