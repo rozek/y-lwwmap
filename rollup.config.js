@@ -1,13 +1,13 @@
 // see https://github.com/rozek/build-configuration-study
 
 import typescript from '@rollup/plugin-typescript';
-import { terser } from 'rollup-plugin-terser'
+import terser from '@rollup/plugin-terser'
 
 export default {
   input: './src/LWWMap.ts',
   output: [
     {
-      file:     './dist/LWWMap.js',
+      file:     './dist/LWWMap.umd.js',
       format:   'umd', // builds for both Node.js and Browser
       name:     'LWWMap', // required for UMD modules
       sourcemap:true,
@@ -15,10 +15,6 @@ export default {
     },{
       file:     './dist/LWWMap.esm.js',
       format:   'esm',
-      sourcemap:true,
-    },{
-      file:     './dist/LWWMap.cjs',
-      format:   'cjs',
       sourcemap:true,
     }
   ],
