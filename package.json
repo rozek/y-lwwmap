@@ -1,7 +1,8 @@
 {
   "name": "y-lwwmap",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "a shared CRDT key-value map for Yjs using a \"last-write-wins\" (LWW) algorithm for conflict resolution",
+  "type": "module",
   "main":   "./dist/LWWMap.umd.js",
   "browser":"./dist/LWWMap.umd.js",
   "module": "./dist/LWWMap.esm.js",
@@ -20,7 +21,7 @@
   "scripts": {
     "build": "rimraf dist && rollup -c rollup.config.js && tsc && mv src/*.d.ts dist && rimraf dist/src && rm src/*.js*",
     "agadoo": "agadoo",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node Tests.js"
   },
   "repository": {
     "type": "git",
