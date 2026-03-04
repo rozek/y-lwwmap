@@ -5,7 +5,7 @@ type ChangeLogEntry<T> = {
     Value?: T;
     Timestamp: number;
 };
-export declare class LWWMap<T extends object | boolean | Array<T> | string | number | null | Uint8Array> extends Observable<string> {
+export declare class LWWMap<T extends null | boolean | number | string | Uint8Array | object | Array<T>> extends Observable<string> {
     protected RetentionPeriod: number;
     protected sharedArray: Y.Array<ChangeLogEntry<T>>;
     protected localMap: Map<string, ChangeLogEntry<T>>;
