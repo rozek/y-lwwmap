@@ -210,6 +210,20 @@ In other words,
 * with an active network connection, the differing wall clocks do not play any role (within the transmission time over this network)
 * while beeing offline, "future" changes will superseed "past" ones - but only if the "past" one wasn't be applied more than 1 minute later than the "future" one
 
+## Test Documentation ##
+
+The test suite is organised in three layers:
+
+* **[TestPlan.md](TestPlan.md)** — describes all 123 test cases grouped by topic, including implementation notes and a priority classification (critical / high / medium)
+* **[TestCases.md](TestCases.md)** — step-by-step descriptions of every test case; links to the individual chapter files in the [TestCases/](TestCases/) folder
+* **[tests/](tests/)** — the actual [Vitest](https://vitest.dev/) test files (`Tests-1.test.ts` … `Tests-12.test.ts`), one file per chapter
+
+Run the full suite with:
+
+```
+npm test
+```
+
 ## Build Instructions ##
 
 You may easily build this package yourself.
