@@ -1,6 +1,6 @@
 # Test Cases for `LWWMap`
 
-This document provides step-by-step test cases for all 121 tests described in
+This document provides step-by-step test cases for all 123 tests described in
 `TestPlan.md`. Each chapter is contained in a separate file linked below.
 
 ---

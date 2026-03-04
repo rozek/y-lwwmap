@@ -8,7 +8,7 @@ This document describes the complete test plan for the `LWWMap` class as defined
 - **Part II — CRDT Behaviour Tests**: verify the Last-Write-Wins conflict resolution,
   convergence, commutativity, idempotency, and offline/reconnect semantics.
 
-A `MockSyncProvider` class (already present in `Tests.test.ts`) is used in Part II to
+A `MockSyncProvider` class (defined in `tests/Tests-10.test.ts`) is used in Part II to
 simulate network synchronisation between two or more `Y.Doc` instances without an
 actual network connection.
 
@@ -49,7 +49,7 @@ All four cases above must trigger this guard.
 - **TC-2.1.2** - Calling `destroy()` delegates to `super.destroy()`, so all external `'change'` listeners are also removed
 
 **Implementation notes:**
-`destroy()` calls `this.sharedArray.unobserve(this._observerHandler)` followed by
+`destroy()` calls `this.sharedArray.unobserve(this._ObserverHandler)` followed by
 `super.destroy()`. After `destroy()`, no `'change'` event must be emitted even when
 the underlying `Y.Array` is modified directly.
 
@@ -354,15 +354,15 @@ corrupt the map.
 | 2. `destroy()` | 2 |
 | 3. Basic map operations | 24 |
 | 4. Value types | 14 |
-| 5. Iteration | 11 |
-| 6. Event system (incl. remote events) | 14 |
+| 5. Iteration | 13 |
+| 6. Event system (incl. remote events) | 16 |
 | 7. LWW conflict resolution | 5 |
 | 8. Synthetic timestamps | 6 |
 | 9. Multi-client sync | 7 |
 | 10. Concurrent write conflict resolution | 7 |
 | 11. Deletion log & retention | 9 |
-| 12. Robustness (incl. invalid inputs) | 14 |
-| **Total** | **121** |
+| 12. Robustness (incl. invalid inputs) | 12 |
+| **Total** | **123** |
 
 ### Priority
 

@@ -164,7 +164,7 @@ Deleting a non-existing entry is permitted, but does neither change the LWWMap n
 
 ### Constructor ###
 
-* **`LWWMap<T extends null|boolean|number|string|object|Uint8Array|Array<T>> extends Observable<string> (sharedArray:Y.Array<{ Key:string, Value:T }>, RetentionPeriod:number = 30*24*60*60*1000)`**<br>creates a new `LWWMap`for elements of type `T`, synchronized using the given [Y.Array](https://github.com/yjs/yjs#shared-types) `sharedArray`. If provided, deleted entries are kept for the given `RetentionPeriod` (measured from the time of deletion on) and forgotten afterwards
+* **`LWWMap<T extends object|boolean|Array<T>|string|number|null|Uint8Array> extends Observable<string> (sharedArray:Y.Array<{ Key:string, Value:T }>, RetentionPeriod:number = 30*24*60*60*1000)`**<br>creates a new `LWWMap` for elements of type `T`, synchronized using the given [Y.Array](https://github.com/yjs/yjs#shared-types) `sharedArray`. If provided, deleted entries are kept for the given `RetentionPeriod` (measured from the time of deletion on) and forgotten afterwards
 
 ### Properties ###
 
