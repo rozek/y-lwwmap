@@ -28,38 +28,26 @@ When reconnecting after a period of disconnection, clients with faster running c
 
 ## Installation ##
 
-`y-lwwmap` may be used as an ECMAScript module (ESM), a CommonJS or AMD module or from a global variable.
+`y-lwwmap` is an ECMAScript module (ESM) and requires a bundler or a runtime with native ESM support.
 
-You may either install the package into your build environment using [NPM](https://docs.npmjs.com/) with the command
+Install the package into your build environment using [NPM](https://docs.npmjs.com/):
 
 ```
 npm install y-lwwmap
 ```
 
-or load the plain script file directly
-
-```html
-<script src="https://unpkg.com/y-lwwmap"></script>
-```
-
 ## Access ##
 
-How to access the package depends on the type of module you prefer
+```javascript
+import { LWWMap } from 'y-lwwmap'
+```
 
-* ESM (or Svelte): `import { LWWMap } from 'y-lwwmap'`
-* CommonJS: `const LWWMap = require('y-lwwmap')`
-* AMD: `require(['y-lwwmap'], (LWWMap) => {...})`
-
-Alternatively, you may access the global variable `LWWMap` directly.
-
-Note for ECMAScript module users: all module functions and values are exported individually, thus allowing your bundler to perform some "tree-shaking" in order to include actually used functions or values (together with their dependencies) only.
+All exports are named, allowing your bundler to perform tree-shaking and include only what is actually used.
 
 ## Usage within Svelte ##
 
-For Svelte, it is recommended to import the package in a module context. From then on, its exports may be used as usual:
-
 ```html
-<script context="module">
+<script module>
   import * as Y     from 'yjs'
   import { LWWMap } from 'y-lwwmap'
 </script>
@@ -72,9 +60,9 @@ For Svelte, it is recommended to import the package in a module context. From th
 </script>
 ```
 
-## Usage as ECMAscript, CommonJS or AMD Module (or as a global Variable) ##
+## Usage ##
 
-Let's assume that you already "required" or "imported" (or simply loaded) the module according to your local environment. In that case, you may use it as follows:
+After importing the module:
 
 ```javascript
   ...
@@ -93,6 +81,54 @@ In order to choose a "useful" `RetentionPeriod`, please keep in mind that
 As a consequence, the following "rules of thumb" seem useful
 * keep `RetentionPeriod` as short as possible if you plan to delete entries often (as every deleted entry still consumes memory keeping its key and deletion timestamp)
 * make `RetentionPeriod` larger than the longest expected offline duration for any client
+
+### Using Yjs Shared Types as Values ###
+
+`LWWMap` supports Yjs shared types (`Y.Array`, `Y.Map`, `Y.Text`, `Y.XmlFragment`) as values. There are two cases:
+
+**Top-level shared types** (registered in the `Y.Doc` via `doc.getArray(name)` etc.) are stored as a serialisable reference and automatically resolved when read back:
+
+```javascript
+const innerArray = doc.getArray('innerContainer')
+outerMap.set('data', innerArray)        // stored as a named reference
+
+const retrieved = outerMap.get('data')  // → the same Y.Array instance
+```
+
+**Standalone shared types** (created with `new Y.Array()` etc., not yet attached to a `Y.Doc`) are embedded directly inside the `LWWMap`'s backing `Y.Array` and synchronized as part of it:
+
+```javascript
+const innerArray = new Y.Array()        // not yet integrated into any doc
+innerArray.push(['hello'])
+outerMap.set('data', innerArray)        // embedded and integrated automatically
+
+const retrieved = outerMap.get('data')  // → the embedded Y.Array
+```
+
+### Nesting LWWMaps ###
+
+An `LWWMap` can itself be used as the **value** of another `LWWMap`. Because `LWWMap` is not a native Yjs type, it is stored and transferred via its underlying `Y.Array` container — accessible through the `Container` property:
+
+```javascript
+// sender side: store a nested LWWMap
+const innerArray = doc.getArray('innerContainer')
+const innerMap   = new LWWMap(innerArray)
+innerMap.set('x', 42)
+outerMap.set('config', innerMap.Container)  // store the Y.Array, not the LWWMap wrapper
+```
+
+On the **receiving** side (or anywhere else that has access to the synced `Y.Doc`), retrieve the `Y.Array` and pass it to the `LWWMap` constructor. The constructor reads all existing entries from the `Y.Array` and fully reconstructs the map state:
+
+```javascript
+// receiver side: reconstruct the nested LWWMap
+const rawArray = outerMap.get('config')   // → Y.Array (Yjs preserves the type)
+const innerMap = new LWWMap(rawArray)     // wrap it
+console.log(innerMap.get('x'))            // → 42
+```
+
+Two things to keep in mind:
+* The application must know — by convention or by additional metadata — that a given `Y.Array` value is intended to be used as an `LWWMap`, rather than a plain `Y.Array`. Yjs preserves the `Y.Array` type across synchronisation, but knows nothing about `LWWMap` wrappers.
+* All `LWWMap` instances wrapping the same nested `Y.Array` should use the same `RetentionPeriod` (see above).
 
 ## API Reference ##
 
@@ -118,8 +154,8 @@ The following differences are important:
   * `Uint8Array`s,
   * plain (JSON-serializable) `Object`s,
   * `Array`s of the above,
-  * `Y.Array`s or nested `LWWMap`s 
-* external changes are reported through `'change'` events (one event per transaction) containing JavaScript [Maps]() with the following [key,value] pairs (the given key is always that of a modified LWWMap entry)
+  * Yjs shared types (`Y.Array`, `Y.Map`, `Y.Text`, `Y.XmlFragment`) or nested `LWWMap`s
+* external changes are reported through `'change'` events (one event per transaction) containing JavaScript [Maps](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) with the following [key,value] pairs (the given key is always that of a modified LWWMap entry)
   * `[key, { action:'add', newValue:... }]`
   * `[key, { action:'update', oldValue:..., newValue:... }]`
   * `[key, { action:'delete', oldValue:... }]`
@@ -128,7 +164,7 @@ Deleting a non-existing entry is permitted, but does neither change the LWWMap n
 
 ### Constructor ###
 
-* **`LWWMap<T extends null|boolean|number|string|object|Uint8Array|Array<T>> extends Observable<T> (sharedArray:Y.Array<{ key: string, val: T }>, RetentionPeriod:number = 30*24*60*60*1000)`**<br>creates a new `LWWMap`for elements of type `T`, synchronized using the given [Y.Array](https://github.com/yjs/yjs#shared-types) `sharedArray`. If provided, deleted entries are kept for the given `RetentionPeriod` (measured from the time of deletion on) and forgotten afterwards
+* **`LWWMap<T extends null|boolean|number|string|object|Uint8Array|Array<T>> extends Observable<string> (sharedArray:Y.Array<{ Key:string, Value:T }>, RetentionPeriod:number = 30*24*60*60*1000)`**<br>creates a new `LWWMap`for elements of type `T`, synchronized using the given [Y.Array](https://github.com/yjs/yjs#shared-types) `sharedArray`. If provided, deleted entries are kept for the given `RetentionPeriod` (measured from the time of deletion on) and forgotten afterwards
 
 ### Properties ###
 
@@ -137,7 +173,7 @@ Deleting a non-existing entry is permitted, but does neither change the LWWMap n
 
 ### Methods ###
 
-* **`[Symbol.iterator]():IterableIterator<T>`**<br>works like `entries()` but allows this LWWMap to be used in a `for ... of` loop
+* **`[Symbol.iterator]():IterableIterator<[string, T]>`**<br>works like `entries()` but allows this LWWMap to be used in a `for ... of` loop
 * **`clear ():void`**<br>removes all elements from this LWWMap
 * **`delete (Key:string):boolean`**<br>removes the element with the given `Key` from this LWWMap and returns `true` if that element existed before - or `false` otherwise
 * **`entries ():IterableIterator<[string, T]>`**<br>returns a new map iterator object that contains the [key, value] pairs for each element of this LWWMap in arbitrary order
@@ -145,7 +181,7 @@ Deleting a non-existing entry is permitted, but does neither change the LWWMap n
 * **`get (Key:string):T | undefined`**<br>returns (a reference to) the element with the given `Key` in this LWWMap - or `undefined` if such an element does not exist
 * **`has (Key:string):boolean`**<br>returns `true` if this LWWMap contains an element with the given `Key` - or `false` if not
 * **`keys ():IterableIterator<string>`**<br>returns a new map iterator object that contains the keys for each element in this LWWMap in arbitrary order
-* **`set (Key:string, Value:T):void`**<br>adds or updates the element with the given `Key` in this LWWMap by setting the given `Value`
+* **`set (Key:string, Value:T):this`**<br>adds or updates the element with the given `Key` in this LWWMap by setting the given `Value`; returns `this` to allow method chaining
 * **`values ():IterableIterator<T>`**<br>returns a new map iterator object that contains the values for each element in this LWWMap in arbitrary order<br>&nbsp;<br>
 * **`emit (EventName:string, ArgList:Array<any>):void`**<br>emits an event with the given `EventName`. All event listeners registered for this event will be invoked with the arguments specified in `ArgList` (see [lib0/Observable](https://github.com/dmonad/lib0/blob/main/observable.js))
 * **`off (EventName:string, Handler:Function):void`**<br>unregisters the given `Handler` from the given `EventName`
@@ -180,12 +216,14 @@ You may easily build this package yourself.
 
 Just install [NPM](https://docs.npmjs.com/) according to the instructions for your platform and follow these steps:
 
-1. either clone this repository using [git](https://git-scm.com/) or [download a ZIP archive](https://github.com/rozek/y-lwwmap/archive/refs/heads/main.zip) with its contents to your disk and unpack it there 
+1. either clone this repository using [git](https://git-scm.com/) or [download a ZIP archive](https://github.com/rozek/y-lwwmap/archive/refs/heads/main.zip) with its contents to your disk and unpack it there
 2. open a shell and navigate to the root directory of this repository
 3. run `npm install` in order to install the complete build environment
 4. execute `npm run build` to create a new build
 
-You may also look into the author's [build-configuration-study](https://github.com/rozek/build-configuration-study) for a general description of his build environment.
+The build uses [Vite](https://vite.dev/) in library mode and produces a single ESM bundle (`dist/LWWMap.js`) together with TypeScript declaration files (`dist/LWWMap.d.ts`).
+
+Run `npm test` to execute the test suite with [Vitest](https://vitest.dev/).
 
 ## License ##
 
